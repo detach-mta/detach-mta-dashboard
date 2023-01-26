@@ -53,11 +53,10 @@ export default function Home() {
         <meta name="viewport" content="width=device.width, initial-scale=1.0" />
         <meta name="description" content="To compare space saved" />
         <link rel="icon" href="/favicon.ico" />
-        <link rel="stylesheet" href="style.css" />
       </Head>
       <main className={styles.main}>
         <div className={styles.description}>
-          <h1>Don't tach my documents</h1>
+          <h1>Don&apos;t tach my documents</h1>
         </div>
         <div className={styles.description}>
           <p>SMTP optimisé pour le partage de fichiers</p>
