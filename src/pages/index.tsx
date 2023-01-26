@@ -13,33 +13,41 @@ const impact = {
   car: 100,
 };
 
+const data = [
+  { year: 2010, size: 10 },
+  { year: 2011, size: 20 },
+  { year: 2012, size: 15 },
+  { year: 2013, size: 25 },
+  { year: 2014, size: 22 },
+  { year: 2015, size: 30 },
+  { year: 2016, size: 28 },
+];
 
-const getData = function () {
+const getSavedSize = function (data: { year: number; size: number }[]) {
+  return "35Mo";
+};
+
+const parseData = function (data: { year: number; size: number }[]) {
   const colorDetach = "#02AFCF";
-  const colorAttach = "#ef5104";
-  
-  const data = [
-    { year: 2010, size: 10 },
-    { year: 2011, size: 20 },
-    { year: 2012, size: 15 },
-    { year: 2013, size: 25 },
-    { year: 2014, size: 22 },
-    { year: 2015, size: 30 },
-    { year: 2016, size: 28 },
-  ];
+  const colorAttach = "#000000";
+  const borderWidth = 1.5;
 
   return {
-    labels: data.map((row) => row.year),
+    labels: data?.map((row: { year: number }) => row.year),
     datasets: [
+      {
+        label: "Attached",
+        data: data?.map((row: { size: number }) => row.size * PERCENT_SAVE),
+        borderWidth,
+        borderColor: colorAttach,
+        backgroundColor: colorAttach + "80",
+      },
       {
         label: "Detattached",
         data: data.map((row) => row.size),
-        backgroundColor: colorDetach,
-      },
-      {
-        label: "Attached",
-        data: data.map((row) => row.size * PERCENT_SAVE),
-        backgroundColor: colorAttach,
+        borderWidth,
+        borderColor: colorDetach,
+        backgroundColor: colorDetach + "80",
       },
     ],
   };
@@ -80,7 +88,18 @@ export default function Home() {
         </div>
 
         <div className={styles.center}>
-          <Graph data={getData()}></Graph>
+          <Graph data={parseData(data)}></Graph>
+        </div>
+
+        <div className={styles.center}>
+          <div className={styles.logo}>
+            <h2>You have saved :</h2>
+          </div>
+          <div className={styles.thirteen}>{getSavedSize(data)}</div>
+        </div>
+
+        <div className={styles.description}>
+          <h2>which is equivalent to :</h2>
         </div>
 
         <div className={styles.grid}>
