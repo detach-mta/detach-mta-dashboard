@@ -1,0 +1,16 @@
+/*
+* {
+    background-color: black;
+    color: #00ffff;
+    //#00ffff #00ffff80 #bbffff #0cf490 #900cf4 #ffbb00
+}
+*/
+
+.--graph {
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+.--graph-empty {
+    width: 100px;
+    height: 100px;
+}
