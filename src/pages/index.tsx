@@ -67,7 +67,7 @@ export default function Home() {
           <h1>Don&apos;t tach my documents</h1>
         </div>
         <div className={styles.description}>
-          <p>SMTP optimisé pour le partage de fichiers</p>
+          <p>SMTP optimized for file sharing</p>
           <div>
             <a
               href="https://www.imt.fr"
@@ -111,9 +111,9 @@ export default function Home() {
           >
             <h2 className={inter.className}>
               {impact.cigarettes} <span>&#10799;</span>{" "}
-              {`Cigarette${impact.cigarettes >= 2 ? "s" : ""}`}
+              {`Fag${impact.cigarettes >= 2 ? "s" : ""}`}
             </h2>
-            <p className={inter.className}>100 cigarettes par octet.</p>
+            <p className={inter.className}>100 fags by octet.</p>
           </a>
 
           <a
@@ -124,9 +124,9 @@ export default function Home() {
           >
             <h2 className={inter.className}>
               {impact.bottle} <span>&#10799;</span>{" "}
-              {`Bouteille${impact.bottle >= 2 ? "s" : ""}`}
+              {`Bottle${impact.bottle >= 2 ? "s" : ""}`}
             </h2>
-            <p className={inter.className}>10 bouteilles par octet.</p>
+            <p className={inter.className}>10 bottles by octet.</p>
           </a>
           <a
             href="https://www.car.com"
@@ -136,9 +136,9 @@ export default function Home() {
           >
             <h2 className={inter.className}>
               {impact.car} <span>&#10799;</span>{" "}
-              {`Voiture${impact.car >= 2 ? "s" : ""}`}
+              {`Car${impact.car >= 2 ? "s" : ""}`}
             </h2>
-            <p className={inter.className}>100 voitures par octet.</p>
+            <p className={inter.className}>100 car by octet.</p>
           </a>
 
           <a
@@ -149,9 +149,9 @@ export default function Home() {
           >
             <h2 className={inter.className}>
               {impact.tree} <span>&#10799;</span>{" "}
-              {`Arbre${impact.tree >= 2 ? "s" : ""}`}
+              {`Tree${impact.tree >= 2 ? "s" : ""}`}
             </h2>
-            <p className={inter.className}>10 arbres par octet.</p>
+            <p className={inter.className}>10 trees by octet.</p>
           </a>
         </div>
       </main>
