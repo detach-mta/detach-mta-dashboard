@@ -80,7 +80,7 @@ export default function Home() {
                 alt="IMT Logo"
                 className={styles.imtLogo}
                 width={70}
-                height={100}
+                height={30}
                 priority
               />
             </a>
