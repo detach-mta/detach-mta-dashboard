@@ -5,18 +5,27 @@ import styles from "@/styles/Home.module.css";
 import Graph from "@/component/Graph/Graph";
 import "chartjs-adapter-date-fns";
 import parse from "date-fns/parse";
+import { useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
-const PERCENT_SAVE = 2.5;
-const impact = {
-  cigarettes: 10,
-  bottle: 100,
-  tree: 10,
-  car: 100,
+const PERCENT_SAVE = 1.5;
+
+const impactByMo = {
+  co2_g: 4.136, // for 10Mo = 10,41+0.36
+  cigarette: 0.295430344,
+  bottle: 0.009136424,
+  table: 0.000053768,
+  car: 0.019009056,
 };
+type ImpactByMoType = typeof impactByMo;
+
+function round(num: number, fractionDigits = 2): number {
+  return Number(num.toFixed(fractionDigits));
+}
 
 const dateFormat = "yyyy-MM-dd";
 const referenceDate = new Date();
+
 const data = [
   { date: "2022-09-15", size: 10 },
   { date: "2022-10-15", size: 20 },
@@ -26,8 +35,12 @@ const data = [
   { date: "2023-02-15", size: 28 },
 ];
 
-const getSavedSize = function (data: { date: string; size: number }[]) {
-  return "35Mo";
+const getSavedMoSize = function (data: { date: string; size: number }[]) {
+  const count = data.reduce(
+    (prevValue, row) => prevValue + row.size * PERCENT_SAVE,
+    0
+  );
+  return count;
 };
 
 const parseData = function (data: { date: string; size: number }[]) {
@@ -42,7 +55,9 @@ const parseData = function (data: { date: string; size: number }[]) {
     datasets: [
       {
         label: "Attached",
-        data: data?.map((row: { size: number }) => row.size * PERCENT_SAVE),
+        data: data?.map(
+          (row: { size: number }) => row.size * (1 + PERCENT_SAVE)
+        ),
         borderWidth,
         borderColor: colorAttach,
         backgroundColor: colorAttach + "80",
@@ -59,6 +74,15 @@ const parseData = function (data: { date: string; size: number }[]) {
 };
 
 export default function Home() {
+  const savedMoSize = getSavedMoSize(data);
+  const savedMoSizeEqui: ImpactByMoType = {
+    co2_g: savedMoSize,
+    cigarette: round(savedMoSize * impactByMo.cigarette),
+    bottle: round(savedMoSize * impactByMo.bottle),
+    table: round(savedMoSize * impactByMo.table),
+    car: round(savedMoSize * impactByMo.car),
+  };
+
   return (
     <>
       <Head>
@@ -100,7 +124,7 @@ export default function Home() {
           <div className={styles.logo}>
             <h2>You have saved :</h2>
           </div>
-          <div className={styles.thirteen}>{getSavedSize(data)}</div>
+          <div className={styles.thirteen}>{savedMoSize + "Mo"}</div>
         </div>
 
         <div className={styles.description}>
@@ -109,54 +133,70 @@ export default function Home() {
 
         <div className={styles.grid}>
           <a
-            href="https://www.camel.com"
+            href="https://impactco2.fr/divers/cigarette"
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              {impact.cigarettes} <span>&#10799;</span>{" "}
-              {`Fag${impact.cigarettes >= 2 ? "s" : ""}`}
+              {savedMoSizeEqui.cigarette} <span>&#10799;</span>{" "}
+              {`Cigarette${savedMoSizeEqui.cigarette >= 2 ? "s" : ""}`}
             </h2>
-            <p className={inter.className}>100 fags by octet.</p>
+            <p className={inter.className}>
+              {`${impactByMo.cigarette} cigarette${
+                impactByMo.cigarette >= 2 ? "s" : ""
+              } by Mo.`}
+            </p>
           </a>
 
           <a
-            href="https://www.volvic.fr"
+            href="https://impactco2.fr/boisson/eauenbouteille"
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              {impact.bottle} <span>&#10799;</span>{" "}
-              {`Bottle${impact.bottle >= 2 ? "s" : ""}`}
+              {savedMoSizeEqui.bottle} <span>&#10799;</span>{" "}
+              {`Bottle${savedMoSizeEqui.bottle >= 2 ? "s" : ""}`}
             </h2>
-            <p className={inter.className}>10 bottles by octet.</p>
+            <p className={inter.className}>
+              {`${impactByMo.bottle} liter${
+                impactByMo.bottle >= 2 ? "s" : ""
+              } of bottled water by Mo.`}
+            </p>
           </a>
           <a
-            href="https://www.car.com"
+            href="https://impactco2.fr/transport/voiturethermique"
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              {impact.car} <span>&#10799;</span>{" "}
-              {`Car${impact.car >= 2 ? "s" : ""}`}
+              {savedMoSizeEqui.car} <span>&#10799;</span>{" "}
+              {`Km${savedMoSizeEqui.car >= 2 ? "s" : ""} by car`}
             </h2>
-            <p className={inter.className}>100 car by octet.</p>
+            <p className={inter.className}>
+              {`${impactByMo.car} Kilometer${
+                impactByMo.car >= 2 ? "s" : ""
+              } by car by Mo.`}
+            </p>
           </a>
 
           <a
-            href="https://www.tree.fr"
+            href="https://impactco2.fr/mobilier/tableenbois"
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              {impact.tree} <span>&#10799;</span>{" "}
-              {`Tree${impact.tree >= 2 ? "s" : ""}`}
+              {savedMoSizeEqui.table} <span>&#10799;</span>{" "}
+              {`Table${savedMoSizeEqui.table >= 2 ? "s" : ""}`}
             </h2>
-            <p className={inter.className}>10 trees by octet.</p>
+            <p className={inter.className}>
+              {`${impactByMo.table} table${
+                impactByMo.table >= 2 ? "s" : ""
+              } by Mo.`}
+            </p>
           </a>
         </div>
       </main>
