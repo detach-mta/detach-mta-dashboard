@@ -143,7 +143,7 @@ export default function Home() {
               {`Cigarette${savedMoSizeEqui.cigarette >= 2 ? "s" : ""}`}
             </h2>
             <p className={inter.className}>
-              {`${impactByMo.cigarette} cigarette${
+              {`${round(impactByMo.cigarette, 4)} cigarette${
                 impactByMo.cigarette >= 2 ? "s" : ""
               } by Mo.`}
             </p>
@@ -160,7 +160,7 @@ export default function Home() {
               {`Bottle${savedMoSizeEqui.bottle >= 2 ? "s" : ""}`}
             </h2>
             <p className={inter.className}>
-              {`${impactByMo.bottle} liter${
+              {`${round(impactByMo.bottle, 4)} liter${
                 impactByMo.bottle >= 2 ? "s" : ""
               } of bottled water by Mo.`}
             </p>
@@ -176,7 +176,7 @@ export default function Home() {
               {`Km${savedMoSizeEqui.car >= 2 ? "s" : ""} by car`}
             </h2>
             <p className={inter.className}>
-              {`${impactByMo.car} Kilometer${
+              {`${round(impactByMo.car, 4)} kilometer${
                 impactByMo.car >= 2 ? "s" : ""
               } by car by Mo.`}
             </p>
@@ -193,7 +193,7 @@ export default function Home() {
               {`Table${savedMoSizeEqui.table >= 2 ? "s" : ""}`}
             </h2>
             <p className={inter.className}>
-              {`${impactByMo.table} table${
+              {`${round(impactByMo.table, 4)} table${
                 impactByMo.table >= 2 ? "s" : ""
               } by Mo.`}
             </p>
