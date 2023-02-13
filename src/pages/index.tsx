@@ -124,7 +124,7 @@ export default function Home() {
           <div className={styles.logo}>
             <h2>You have saved :</h2>
           </div>
-          <div className={styles.thirteen}>{savedMoSize + "Mo"}</div>
+          <div className={styles.thirteen}>{savedMoSize + " Mo"}</div>
         </div>
 
         <div className={styles.description}>
