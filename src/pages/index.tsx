@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
 import Graph from "@/component/Graph/Graph";
+import "chartjs-adapter-date-fns";
+import parse from "date-fns/parse";
 
 const inter = Inter({ subsets: ["latin"] });
 const PERCENT_SAVE = 2.5;
@@ -13,27 +15,30 @@ const impact = {
   car: 100,
 };
 
+const dateFormat = "yyyy-MM-dd";
+const referenceDate = new Date();
 const data = [
-  { year: 2010, size: 10 },
-  { year: 2011, size: 20 },
-  { year: 2012, size: 15 },
-  { year: 2013, size: 25 },
-  { year: 2014, size: 22 },
-  { year: 2015, size: 30 },
-  { year: 2016, size: 28 },
+  { date: "2022-09-15", size: 10 },
+  { date: "2022-10-15", size: 20 },
+  { date: "2022-11-15", size: 15 },
+  { date: "2022-12-15", size: 25 },
+  { date: "2023-01-15", size: 22 },
+  { date: "2023-02-15", size: 28 },
 ];
 
-const getSavedSize = function (data: { year: number; size: number }[]) {
+const getSavedSize = function (data: { date: string; size: number }[]) {
   return "35Mo";
 };
 
-const parseData = function (data: { year: number; size: number }[]) {
+const parseData = function (data: { date: string; size: number }[]) {
   const colorDetach = "#02AFCF";
   const colorAttach = "#000000";
   const borderWidth = 1.5;
 
   return {
-    labels: data?.map((row: { year: number }) => row.year),
+    labels: data?.map((row: { date: string }) =>
+      parse(row.date, dateFormat, referenceDate)
+    ),
     datasets: [
       {
         label: "Attached",

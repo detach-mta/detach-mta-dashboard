@@ -18,42 +18,44 @@ const colorGraphWithTransparency = colorGraph + "80";
 
 
 const defaultOptions = {
-    maintainAspectRatio: false,
-    responsive: true,
-    plugins: {
-      legend: {
-        display: true,
+  maintainAspectRatio: false,
+  responsive: true,
+  plugins: {
+    legend: {
+      display: true,
+    },
+  },
+  color: colorGraph,
+  scales: {
+    x: {
+      border: {
+        color: colorGraph,
+      },
+      grid: {
+        display: false,
+      },
+      ticks: {
+        color: colorGraph,
+      },
+      type: "time",
+      time: { unit: "month" },
+    },
+    y: {
+      border: {
+        color: colorGraph,
+      },
+      grid: {
+        color: colorGraphWithTransparency,
+      },
+      ticks: {
+        color: colorGraph,
+        callback: function (value: string, _index: any, _ticks: any) {
+          return value + "Mo";
+        },
       },
     },
-    color: colorGraph,
-    scales: {
-      x: {
-        border: {
-          color: colorGraph,
-        },
-        grid: {
-          display: false,
-        },
-        ticks: {
-          color: colorGraph,
-        },
-      },
-      y: {
-        border: {
-          color: colorGraph,
-        },
-        grid: {
-          color: colorGraphWithTransparency,
-        },
-        ticks: {
-          color: colorGraph,
-          callback: function (value: string, _index: any, _ticks: any) {
-            return value + "Mo";
-          },
-        },
-      },
-    },
-  };
+  },
+};
 
 
 const Graph: FC<GraphProps> = ({ data, options }: GraphProps) => {
