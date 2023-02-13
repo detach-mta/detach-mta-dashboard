@@ -1,9 +1,9 @@
 import type { FC } from "react";
 import { Bar } from "react-chartjs-2";
 
-import { Chart, registerables } from 'chart.js'
+import { Chart, registerables } from "chart.js";
 
-Chart.register(...registerables)
+Chart.register(...registerables);
 
 import "./Graph.module.css";
 
@@ -12,10 +12,8 @@ export interface GraphProps {
   options?: any;
 }
 
-
 const colorGraph = "#808080";
 const colorGraphWithTransparency = colorGraph + "80";
-
 
 const defaultOptions = {
   maintainAspectRatio: false,
@@ -56,7 +54,6 @@ const defaultOptions = {
     },
   },
 };
-
 
 const Graph: FC<GraphProps> = ({ data, options }: GraphProps) => {
   options = { ...defaultOptions, ...options };
