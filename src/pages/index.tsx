@@ -76,7 +76,7 @@ const parseData = function (data: { date: string; size: number }[]) {
 export default function Home() {
   const savedMoSize = getSavedMoSize(data);
   const savedMoSizeEqui: ImpactByMoType = {
-    co2_g: savedMoSize,
+    co2_g: savedMoSize * impactByMo.co2_g,
     cigarette: round(savedMoSize * impactByMo.cigarette),
     bottle: round(savedMoSize * impactByMo.bottle),
     table: round(savedMoSize * impactByMo.table),
@@ -124,7 +124,7 @@ export default function Home() {
           <div className={styles.logo}>
             <h2>You have saved :</h2>
           </div>
-          <div className={styles.thirteen}>{savedMoSize + " Mo"}</div>
+          <div className={styles.thirteen}>{savedMoSize + "Mo"}</div>
         </div>
 
         <div className={styles.description}>
@@ -132,6 +132,21 @@ export default function Home() {
         </div>
 
         <div className={styles.grid}>
+          <a
+            href="https://impactco2.fr/usagenumerique/email"
+            className={styles.card}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <h2 className={inter.className}>
+              {round(savedMoSizeEqui.co2_g / 1000)} <span>kg</span>
+              {` of CO₂`}
+            </h2>
+            <p className={inter.className}>
+              {`${round(impactByMo.co2_g, 4)} g of CO₂ by Mo.`}
+            </p>
+          </a>
+
           <a
             href="https://impactco2.fr/divers/cigarette"
             className={styles.card}
@@ -179,23 +194,6 @@ export default function Home() {
               {`${round(impactByMo.car, 4)} kilometer${
                 impactByMo.car >= 2 ? "s" : ""
               } by car by Mo.`}
-            </p>
-          </a>
-
-          <a
-            href="https://impactco2.fr/mobilier/tableenbois"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              {savedMoSizeEqui.table} <span>&#10799;</span>{" "}
-              {`Table${savedMoSizeEqui.table >= 2 ? "s" : ""}`}
-            </h2>
-            <p className={inter.className}>
-              {`${round(impactByMo.table, 4)} table${
-                impactByMo.table >= 2 ? "s" : ""
-              } by Mo.`}
             </p>
           </a>
         </div>
