@@ -1,30 +1,14 @@
 import Head from "next/head";
 import Image from "next/image";
-import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
 import Graph from "@/component/Graph/Graph";
 import "chartjs-adapter-date-fns";
 import parse from "date-fns/parse";
-import { useState } from "react";
+import { round } from "@/utils/helpers";
+import { dateFormat, impactByMo, referenceDate } from "@/utils/constants";
 
+import { Inter } from "@next/font/google";
 const inter = Inter({ subsets: ["latin"] });
-const PERCENT_SAVE = 1.5;
-
-const impactByMo = {
-  co2_g: 4.136, // for 10Mo = 10,41+0.36
-  cigarette: 0.295430344,
-  bottle: 0.009136424,
-  table: 0.000053768,
-  car: 0.019009056,
-};
-type ImpactByMoType = typeof impactByMo;
-
-function round(num: number, fractionDigits = 2): number {
-  return Number(num.toFixed(fractionDigits));
-}
-
-const dateFormat = "yyyy-MM-dd";
-const referenceDate = new Date();
 
 const data = [
   { date: "2022-09-15", size: 10 },
@@ -34,6 +18,8 @@ const data = [
   { date: "2023-01-15", size: 22 },
   { date: "2023-02-15", size: 28 },
 ];
+
+const PERCENT_SAVE = 1.5;
 
 const getSavedMoSize = function (data: { date: string; size: number }[]) {
   const count = data.reduce(
@@ -75,11 +61,10 @@ const parseData = function (data: { date: string; size: number }[]) {
 
 export default function Home() {
   const savedMoSize = getSavedMoSize(data);
-  const savedMoSizeEqui: ImpactByMoType = {
+  const savedMoSizeEqui = {
     co2_g: savedMoSize * impactByMo.co2_g,
     cigarette: round(savedMoSize * impactByMo.cigarette),
     bottle: round(savedMoSize * impactByMo.bottle),
-    table: round(savedMoSize * impactByMo.table),
     car: round(savedMoSize * impactByMo.car),
   };
 
