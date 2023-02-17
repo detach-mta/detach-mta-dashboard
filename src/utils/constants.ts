@@ -1,5 +1,9 @@
 import { EquivToCO2 } from "@/types/data";
 
+const API = process.env.NEXT_PUBLIC_BACKEND || "http://localhost:5000";
+const USER = process.env.NEXT_PUBLIC_USER || "naedri@mail.com";
+const CLIENT = process.env.NEXT_PUBLIC_FRONTEND || "http://localhost:3000";
+
 const equivMo: EquivToCO2[] = [
   {
     name: "CO₂ g",
@@ -37,4 +41,4 @@ const impactByMo = {
 const dateFormat = "yyyy-MM-dd";
 const referenceDate = new Date();
 
-export { dateFormat, equivMo, impactByMo, referenceDate };
+export { dateFormat, equivMo, impactByMo, referenceDate, API, USER, CLIENT };

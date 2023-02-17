@@ -4,12 +4,17 @@ import styles from "@/styles/Home.module.css";
 import Graph from "@/component/Graph/Graph";
 import "chartjs-adapter-date-fns";
 import parse from "date-fns/parse";
-import { round } from "@/utils/helpers";
-import { dateFormat, impactByMo, referenceDate } from "@/utils/constants";
+import { round } from "@/utils/parser";
+import { dateFormat, impactByMo, referenceDate, USER } from "@/utils/constants";
+import React, { useState, useEffect } from "react";
+import { LogMail } from "@/types/data";
+import { fetchMailLog } from "@/services/rest/mail";
 
 import { Inter } from "@next/font/google";
+import Logger from "@/utils/logger";
 const inter = Inter({ subsets: ["latin"] });
 
+const logClassName = "index";
 const data = [
   { date: "2022-09-15", size: 10 },
   { date: "2022-10-15", size: 20 },
@@ -60,6 +65,19 @@ const parseData = function (data: { date: string; size: number }[]) {
 };
 
 export default function Home() {
+  const [mails, setMails] = useState<LogMail[]>([]);
+  const [user, setUser] = useState<string>(USER);
+
+  const updateMail = async (userMail: string) => {
+    const res = (await fetchMailLog(userMail)).response;
+    Logger.info(logClassName, JSON.stringify(res), "updateMail");
+    setMails(res);
+  };
+
+  useEffect(() => {
+    updateMail(user);
+  }, [user]);
+
   const savedMoSize = getSavedMoSize(data);
   const savedMoSizeEqui = {
     co2_g: savedMoSize * impactByMo.co2_g,

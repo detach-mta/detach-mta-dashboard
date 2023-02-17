@@ -5,4 +5,13 @@ type EquivToCO2 = {
   impactByMo: number;
 };
 
-export type { EquivToCO2 };
+type LogMail = {
+  date: string;
+  inboundSize: number;
+  outboundSize: number;
+  recipientsCount: number;
+  sender: string;
+  hasAttachments: boolean;
+};
+
+export type { EquivToCO2, LogMail };
