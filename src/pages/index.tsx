@@ -135,7 +135,7 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              {savedEqui.cigarette} <span>&#10799;</span>{" "}
+              {savedEqui.cigarette} <span>&#10799;</span>
               {`Cigarette${savedEqui.cigarette >= 2 ? "s" : ""}`}
             </h2>
             <p className={inter.className}>
@@ -152,7 +152,7 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              {savedEqui.bottle} <span>&#10799;</span>{" "}
+              {savedEqui.bottle} <span>&#10799;</span>
               {`Bottle${savedEqui.bottle >= 2 ? "s" : ""}`}
             </h2>
             <p className={inter.className}>
@@ -168,7 +168,7 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              {savedEqui.car} <span>&#10799;</span>{" "}
+              {savedEqui.car} <span>&#10799;</span>
               {`Km${savedEqui.car >= 2 ? "s" : ""} by car`}
             </h2>
             <p className={inter.className}>
