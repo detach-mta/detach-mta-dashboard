@@ -7,6 +7,7 @@ import parse from "date-fns/parse";
 import { round } from "@/utils/parser";
 import { dateFormat, impactByMo, referenceDate, USER } from "@/utils/constants";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { LogMail } from "@/types/data";
 import { fetchMailLog } from "@/services/rest/mail";
 
@@ -65,13 +66,19 @@ const parseData = function (data: { date: string; size: number }[]) {
 };
 
 export default function Home() {
-  const [mails, setMails] = useState<LogMail[]>([]);
-  const [user, setUser] = useState<string>(USER);
+  const router = useRouter();
+  const query = new URLSearchParams(router.asPath.split("?")[1]);
+  const queryObject = Object.fromEntries(query.entries());
+  const mail = queryObject?.mail;
+
+  const [dataMails, setDataMails] = useState<LogMail[]>([]);
+  const [user, setUser] = useState<string>(mail || USER);
 
   const updateMail = async (userMail: string) => {
-    const res = (await fetchMailLog(userMail)).response;
-    Logger.info(logClassName, JSON.stringify(res), "updateMail");
-    setMails(res);
+    if (userMail != "") {
+      const res = (await fetchMailLog(userMail)).response;
+      setDataMails(res);
+    }
   };
 
   useEffect(() => {
