@@ -3,83 +3,27 @@ import Image from "next/image";
 import styles from "@/styles/Home.module.css";
 import Graph from "@/component/Graph/Graph";
 import "chartjs-adapter-date-fns";
-import { parseISO, format, parse } from "date-fns";
-import { fromOToMo, round } from "@/utils/parser";
+import { round } from "@/utils/parser";
 import {
   impactByMo,
   USER,
   DEFAULT_METRIC,
   DEFAULT_EQUIV_LIST,
-  dateFormat,
-  referenceDate,
 } from "@/utils/constants";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { EquivList, LogMail, LogMailMonthly, LogMetric } from "@/types/data";
+import { EquivList, LogMail, LogMetric } from "@/types/data";
 import { fetchMailLog } from "@/services/rest/mail";
 
 import { Inter } from "@next/font/google";
-import Logger from "@/utils/logger";
-import type { ChartData } from "chart.js/dist/types/index";
+import {
+  getSavedMoSize,
+  parseDataGraph,
+  parseDataMonthly,
+} from "@/services/data/parser";
 const inter = Inter({ subsets: ["latin"] });
 
 const logClassName = "index";
-
-const getSavedMoSize = function (data: LogMetric) {
-  let diff = data.totalInbound - data.totalOutbound;
-  diff = diff > 0 ? diff : 0;
-  return round(fromOToMo(diff), 2);
-};
-
-const parseDataMonthly = function (mails: LogMail[]): LogMailMonthly[] {
-  let mailsMonthly: LogMailMonthly[] = [];
-  mails.forEach((mail: LogMail) => {
-    const date = parseISO(mail.date);
-    const month = format(date, dateFormat);
-    const index = mailsMonthly.findIndex((mail) => mail.month === month);
-    if (index !== -1) {
-      mailsMonthly[index].totalInbound += mail.inboundSize;
-      mailsMonthly[index].totalOutbound += mail.outboundSize;
-    } else {
-      mailsMonthly.push({
-        month: month,
-        totalInbound: mail.inboundSize,
-        totalOutbound: mail.outboundSize,
-      });
-    }
-  });
-  return mailsMonthly;
-};
-
-const parseDataGraph = function (data: LogMailMonthly[]): ChartData {
-  const colorDetach = "#02AFCF";
-  const colorAttach = "#000000";
-  const borderWidth = 1.5;
-  const alpha = "80";
-
-  const chartData = {
-    labels: data?.map((row: LogMailMonthly) =>
-      parse(row.month, dateFormat, referenceDate)
-    ),
-    datasets: [
-      {
-        label: "Attached",
-        data: data?.map((row: LogMailMonthly) => fromOToMo(row.totalInbound)),
-        borderWidth,
-        borderColor: colorAttach,
-        backgroundColor: colorAttach + alpha,
-      },
-      {
-        label: "Detattached",
-        data: data?.map((row: LogMailMonthly) => fromOToMo(row.totalOutbound)),
-        borderWidth,
-        borderColor: colorDetach,
-        backgroundColor: colorDetach + alpha,
-      },
-    ],
-  };
-  return chartData;
-};
 
 export default function Home() {
   const router = useRouter();
