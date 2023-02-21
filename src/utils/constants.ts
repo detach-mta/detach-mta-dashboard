@@ -1,4 +1,4 @@
-import { EquivToCO2 } from "@/types/data";
+import { EquivToCO2, EquivList, LogMetric } from "@/types/data";
 
 const API = process.env.NEXT_PUBLIC_BACKEND || "http://localhost:5000";
 const USER = process.env.NEXT_PUBLIC_USER || "naedri@mail.com";
@@ -38,7 +38,31 @@ const impactByMo = {
   car: equivMo[3].impactByMo,
 };
 
-const dateFormat = "yyyy-MM-dd";
+const DEFAULT_EQUIV_LIST: EquivList = {
+  co2_g: 0,
+  cigarette: 0,
+  bottle: 0,
+  car: 0,
+};
+
+const DEFAULT_METRIC: LogMetric = {
+  totalInbound: 0,
+  totalOutbound: 0,
+  totalCount: 0,
+  totalAttachments: 0,
+};
+
+const dateFormat = "yyyy-MM";
 const referenceDate = new Date();
 
-export { dateFormat, equivMo, impactByMo, referenceDate, API, USER, CLIENT };
+export {
+  dateFormat,
+  equivMo,
+  impactByMo,
+  referenceDate,
+  API,
+  USER,
+  CLIENT,
+  DEFAULT_METRIC,
+  DEFAULT_EQUIV_LIST,
+};

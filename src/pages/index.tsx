@@ -3,66 +3,82 @@ import Image from "next/image";
 import styles from "@/styles/Home.module.css";
 import Graph from "@/component/Graph/Graph";
 import "chartjs-adapter-date-fns";
-import parse from "date-fns/parse";
-import { round } from "@/utils/parser";
-import { dateFormat, impactByMo, referenceDate, USER } from "@/utils/constants";
+import { parseISO, format, parse } from "date-fns";
+import { fromOToMo, round } from "@/utils/parser";
+import {
+  impactByMo,
+  USER,
+  DEFAULT_METRIC,
+  DEFAULT_EQUIV_LIST,
+  dateFormat,
+  referenceDate,
+} from "@/utils/constants";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { LogMail } from "@/types/data";
+import { EquivList, LogMail, LogMailMonthly, LogMetric } from "@/types/data";
 import { fetchMailLog } from "@/services/rest/mail";
 
 import { Inter } from "@next/font/google";
 import Logger from "@/utils/logger";
+import type { ChartData } from "chart.js/dist/types/index";
 const inter = Inter({ subsets: ["latin"] });
 
 const logClassName = "index";
-const data = [
-  { date: "2022-09-15", size: 10 },
-  { date: "2022-10-15", size: 20 },
-  { date: "2022-11-15", size: 15 },
-  { date: "2022-12-15", size: 25 },
-  { date: "2023-01-15", size: 22 },
-  { date: "2023-02-15", size: 28 },
-];
 
-const PERCENT_SAVE = 1.5;
-
-const getSavedMoSize = function (data: { date: string; size: number }[]) {
-  const count = data.reduce(
-    (prevValue, row) => prevValue + row.size * PERCENT_SAVE,
-    0
-  );
-  return count;
+const getSavedMoSize = function (data: LogMetric) {
+  let diff = data.totalInbound - data.totalOutbound;
+  diff = diff > 0 ? diff : 0;
+  return round(fromOToMo(diff), 2);
 };
 
-const parseData = function (data: { date: string; size: number }[]) {
+const parseDataMonthly = function (mails: LogMail[]): LogMailMonthly[] {
+  let mailsMonthly: LogMailMonthly[] = [];
+  mails.forEach((mail: LogMail) => {
+    const date = parseISO(mail.date);
+    const month = format(date, dateFormat);
+    const index = mailsMonthly.findIndex((mail) => mail.month === month);
+    if (index !== -1) {
+      mailsMonthly[index].totalInbound += mail.inboundSize;
+      mailsMonthly[index].totalOutbound += mail.outboundSize;
+    } else {
+      mailsMonthly.push({
+        month: month,
+        totalInbound: mail.inboundSize,
+        totalOutbound: mail.outboundSize,
+      });
+    }
+  });
+  return mailsMonthly;
+};
+
+const parseDataGraph = function (data: LogMailMonthly[]): ChartData {
   const colorDetach = "#02AFCF";
   const colorAttach = "#000000";
   const borderWidth = 1.5;
+  const alpha = "80";
 
-  return {
-    labels: data?.map((row: { date: string }) =>
-      parse(row.date, dateFormat, referenceDate)
+  const chartData = {
+    labels: data?.map((row: LogMailMonthly) =>
+      parse(row.month, dateFormat, referenceDate)
     ),
     datasets: [
       {
         label: "Attached",
-        data: data?.map(
-          (row: { size: number }) => row.size * (1 + PERCENT_SAVE)
-        ),
+        data: data?.map((row: LogMailMonthly) => fromOToMo(row.totalInbound)),
         borderWidth,
         borderColor: colorAttach,
-        backgroundColor: colorAttach + "80",
+        backgroundColor: colorAttach + alpha,
       },
       {
         label: "Detattached",
-        data: data.map((row) => row.size),
+        data: data?.map((row: LogMailMonthly) => fromOToMo(row.totalOutbound)),
         borderWidth,
         borderColor: colorDetach,
-        backgroundColor: colorDetach + "80",
+        backgroundColor: colorDetach + alpha,
       },
     ],
   };
+  return chartData;
 };
 
 export default function Home() {
@@ -71,27 +87,38 @@ export default function Home() {
   const queryObject = Object.fromEntries(query.entries());
   const mail = queryObject?.mail;
 
-  const [dataMails, setDataMails] = useState<LogMail[]>([]);
+  const [mails, setMails] = useState<LogMail[]>([]);
+  const [metrics, setMetrics] = useState<LogMetric>(DEFAULT_METRIC);
+  const [savedMo, setSavedMo] = useState(0);
+  const [savedEqui, setSavedEqui] = useState<EquivList>(DEFAULT_EQUIV_LIST);
   const [user, setUser] = useState<string>(mail || USER);
 
   const updateMail = async (userMail: string) => {
     if (userMail != "") {
       const res = (await fetchMailLog(userMail)).response;
-      setDataMails(res);
+      setUser(userMail);
+      setMails(res.mails);
+      setMetrics(res.metrics);
+      const savedSize = getSavedMoSize(res.metrics);
+      setSavedMo(savedSize);
+      setSavedEqui({
+        co2_g: savedSize * impactByMo.co2_g,
+        cigarette: round(savedSize * impactByMo.cigarette),
+        bottle: round(savedSize * impactByMo.bottle),
+        car: round(savedSize * impactByMo.car),
+      });
+    } else {
+      setUser("");
+      setMails([]);
+      setMetrics(DEFAULT_METRIC);
+      setSavedMo(0);
+      setSavedEqui(DEFAULT_EQUIV_LIST);
     }
   };
 
   useEffect(() => {
     updateMail(user);
   }, [user]);
-
-  const savedMoSize = getSavedMoSize(data);
-  const savedMoSizeEqui = {
-    co2_g: savedMoSize * impactByMo.co2_g,
-    cigarette: round(savedMoSize * impactByMo.cigarette),
-    bottle: round(savedMoSize * impactByMo.bottle),
-    car: round(savedMoSize * impactByMo.car),
-  };
 
   return (
     <>
@@ -127,14 +154,14 @@ export default function Home() {
         </div>
 
         <div className={styles.center}>
-          <Graph data={parseData(data)}></Graph>
+          <Graph data={parseDataGraph(parseDataMonthly(mails))}></Graph>
         </div>
 
         <div className={styles.center}>
           <div className={styles.logo}>
             <h2>You have saved :</h2>
           </div>
-          <div className={styles.thirteen}>{savedMoSize + "Mo"}</div>
+          <div className={styles.thirteen}>{savedMo + "Mo"}</div>
         </div>
 
         <div className={styles.description}>
@@ -149,7 +176,7 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              {round(savedMoSizeEqui.co2_g / 1000)} <span>kg</span>
+              {round(savedEqui.co2_g / 1000)} <span>kg</span>
               {` of CO₂`}
             </h2>
             <p className={inter.className}>
@@ -164,8 +191,8 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              {savedMoSizeEqui.cigarette} <span>&#10799;</span>{" "}
-              {`Cigarette${savedMoSizeEqui.cigarette >= 2 ? "s" : ""}`}
+              {savedEqui.cigarette} <span>&#10799;</span>{" "}
+              {`Cigarette${savedEqui.cigarette >= 2 ? "s" : ""}`}
             </h2>
             <p className={inter.className}>
               {`${round(impactByMo.cigarette, 4)} cigarette${
@@ -181,8 +208,8 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              {savedMoSizeEqui.bottle} <span>&#10799;</span>{" "}
-              {`Bottle${savedMoSizeEqui.bottle >= 2 ? "s" : ""}`}
+              {savedEqui.bottle} <span>&#10799;</span>{" "}
+              {`Bottle${savedEqui.bottle >= 2 ? "s" : ""}`}
             </h2>
             <p className={inter.className}>
               {`${round(impactByMo.bottle, 4)} liter${
@@ -197,8 +224,8 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              {savedMoSizeEqui.car} <span>&#10799;</span>{" "}
-              {`Km${savedMoSizeEqui.car >= 2 ? "s" : ""} by car`}
+              {savedEqui.car} <span>&#10799;</span>{" "}
+              {`Km${savedEqui.car >= 2 ? "s" : ""} by car`}
             </h2>
             <p className={inter.className}>
               {`${round(impactByMo.car, 4)} kilometer${

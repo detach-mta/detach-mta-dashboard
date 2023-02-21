@@ -1,7 +1,7 @@
 import type { ErrorFromServer } from "./error";
-import type { LogMail } from "./data";
+import type { LogMail, LogMetric } from "./data";
 
 export type LogMailResponse = {
-  response: LogMail[];
+  response: { metrics: LogMetric; mails: LogMail[] };
   error: ErrorFromServer | null;
 };
