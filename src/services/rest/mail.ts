@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { LogMailResponse } from "@/types/rest";
-import { API } from "@/utils/constants";
+import { API, DEFAULT_METRIC } from "@/utils/constants";
 import Logger from "@/utils/logger";
 
 import { configHeader } from "@/services/rest/config";
@@ -21,7 +21,7 @@ async function fetchMailLog(userMail: string): Promise<LogMailResponse> {
   } catch (e: any) {
     Logger.error(logClassName, JSON.stringify(e), "fetchMailLog");
     return {
-      response: [],
+      response: { metrics: DEFAULT_METRIC, mails: [] },
       error: e,
     };
   }
