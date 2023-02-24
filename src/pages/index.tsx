@@ -114,6 +114,9 @@ export default function Home() {
             <h2>{user ? "You" : "We"} have saved :</h2>
           </div>
           <div className={styles.thirteen}>{savedMo + "Mo"}</div>
+          <div className={styles.logo}>
+            <h2>over {metrics.totalCount} emails</h2>
+          </div>
         </div>
 
         <div className={styles.description}>

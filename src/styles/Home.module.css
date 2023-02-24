@@ -133,7 +133,7 @@
   width: 75px;
   height: 75px;
   padding: 25px 10px;
-  margin-left: 16px;
+  margin: 0px 16px;
   transform: translateZ(0);
   border-radius: var(--border-radius);
   overflow: hidden;
