@@ -39,6 +39,10 @@ const defaultOptions = {
       time: { unit: "month" },
     },
     y: {
+      title: {
+        display: true,
+        text: "Email size",
+      },
       border: {
         color: colorGraph,
       },

@@ -42,14 +42,14 @@ export const parseDataGraph = function (data: LogMailMonthly[]): ChartData {
     ),
     datasets: [
       {
-        label: "Attached",
+        label: "Current solution",
         data: data?.map((row: LogMailMonthly) => fromOToMo(row.totalInbound)),
         borderWidth,
         borderColor: colorAttach,
         backgroundColor: colorAttach + alpha,
       },
       {
-        label: "Detattached",
+        label: "Our solution",
         data: data?.map((row: LogMailMonthly) => fromOToMo(row.totalOutbound)),
         borderWidth,
         borderColor: colorDetach,
