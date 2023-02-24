@@ -42,6 +42,7 @@ const defaultOptions = {
       border: {
         color: colorGraph,
       },
+      type: "logarithmic",
       grid: {
         color: colorGraphWithTransparency,
       },
