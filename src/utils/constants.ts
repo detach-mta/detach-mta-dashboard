@@ -1,7 +1,6 @@
-import { EquivToCO2, EquivList, LogMetric } from "@/types/data";
+import { EquivToCO2, EquivList, LogMetric, LogMail } from "@/types/data";
 
 const API = process.env.NEXT_PUBLIC_BACKEND || "http://localhost:5000";
-const USER = process.env.NEXT_PUBLIC_USER || "naedri@mail.com";
 const CLIENT = process.env.NEXT_PUBLIC_FRONTEND || "http://localhost:3000";
 
 const equivMo: EquivToCO2[] = [
@@ -31,6 +30,9 @@ const equivMo: EquivToCO2[] = [
   },
 ];
 
+const dateFormat = "yyyy-MM";
+const referenceDate = new Date();
+
 const impactByMo = {
   co2_g: equivMo[0].impactByMo, // for 10Mo = 10,41+0.36
   cigarette: equivMo[1].impactByMo,
@@ -52,8 +54,14 @@ const DEFAULT_METRIC: LogMetric = {
   totalAttachments: 0,
 };
 
-const dateFormat = "yyyy-MM";
-const referenceDate = new Date();
+const DEFAULT_MAIL: LogMail = {
+  date: referenceDate.toISOString(),
+  inboundSize: 0,
+  outboundSize: 0,
+  recipientsCount: 0,
+  sender: "",
+  hasAttachments: false,
+};
 
 export {
   dateFormat,
@@ -61,8 +69,8 @@ export {
   impactByMo,
   referenceDate,
   API,
-  USER,
   CLIENT,
   DEFAULT_METRIC,
   DEFAULT_EQUIV_LIST,
+  DEFAULT_MAIL,
 };

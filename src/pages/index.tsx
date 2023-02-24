@@ -6,14 +6,14 @@ import "chartjs-adapter-date-fns";
 import { round } from "@/utils/parser";
 import {
   impactByMo,
-  USER,
   DEFAULT_METRIC,
   DEFAULT_EQUIV_LIST,
+  DEFAULT_MAIL,
 } from "@/utils/constants";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { EquivList, LogMail, LogMetric } from "@/types/data";
-import { fetchMailLog } from "@/services/rest/mail";
+import { fetchMailLog, fetchMailStats } from "@/services/rest/mail";
 
 import { Inter } from "@next/font/google";
 import {
@@ -35,29 +35,37 @@ export default function Home() {
   const [metrics, setMetrics] = useState<LogMetric>(DEFAULT_METRIC);
   const [savedMo, setSavedMo] = useState(0);
   const [savedEqui, setSavedEqui] = useState<EquivList>(DEFAULT_EQUIV_LIST);
-  const [user, setUser] = useState<string>(mail || USER);
+  const [user, setUser] = useState<string>(mail);
 
   const updateMail = async (userMail: string) => {
-    if (userMail != "") {
+    let metrics: React.SetStateAction<LogMetric>;
+    let mails: React.SetStateAction<LogMail[]>;
+    if (userMail) {
       const res = (await fetchMailLog(userMail)).response;
-      setUser(userMail);
-      setMails(res.mails);
-      setMetrics(res.metrics);
-      const savedSize = getSavedMoSize(res.metrics);
-      setSavedMo(savedSize);
-      setSavedEqui({
-        co2_g: savedSize * impactByMo.co2_g,
-        cigarette: round(savedSize * impactByMo.cigarette),
-        bottle: round(savedSize * impactByMo.bottle),
-        car: round(savedSize * impactByMo.car),
-      });
+      metrics = res.metrics;
+      mails = res.mails;
     } else {
-      setUser("");
-      setMails([]);
-      setMetrics(DEFAULT_METRIC);
-      setSavedMo(0);
-      setSavedEqui(DEFAULT_EQUIV_LIST);
+      const res = (await fetchMailStats()).response;
+      metrics = res;
+      mails = [
+        {
+          ...DEFAULT_MAIL,
+          inboundSize: metrics.totalInbound,
+          outboundSize: metrics.totalOutbound,
+        },
+      ];
     }
+    setUser(userMail);
+    setMails(mails);
+    setMetrics(metrics);
+    const savedSize = getSavedMoSize(metrics, 0);
+    setSavedMo(savedSize);
+    setSavedEqui({
+      co2_g: savedSize * impactByMo.co2_g,
+      cigarette: round(savedSize * impactByMo.cigarette),
+      bottle: round(savedSize * impactByMo.bottle),
+      car: round(savedSize * impactByMo.car),
+    });
   };
 
   useEffect(() => {
@@ -103,7 +111,7 @@ export default function Home() {
 
         <div className={styles.center}>
           <div className={styles.logo}>
-            <h2>You have saved :</h2>
+            <h2>{user ? "You" : "We"} have saved :</h2>
           </div>
           <div className={styles.thirteen}>{savedMo + "Mo"}</div>
         </div>

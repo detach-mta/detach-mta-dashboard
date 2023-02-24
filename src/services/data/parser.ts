@@ -4,10 +4,10 @@ import { round, fromOToMo } from "@/utils/parser";
 import { ChartData } from "chart.js";
 import { parseISO, format, parse } from "date-fns";
 
-export const getSavedMoSize = function (data: LogMetric) {
+export const getSavedMoSize = function (data: LogMetric, _round = 2) {
   let diff = data.totalInbound - data.totalOutbound;
   diff = diff > 0 ? diff : 0;
-  return round(fromOToMo(diff), 2);
+  return round(fromOToMo(diff), _round);
 };
 
 export const parseDataMonthly = function (mails: LogMail[]): LogMailMonthly[] {
