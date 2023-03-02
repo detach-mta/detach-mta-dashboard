@@ -1,23 +1,35 @@
 # detach-mta-dashboard
 
-To compare space saved.
+To show the disk space saved with the detach-mta solution, on a user or server level.
 
 ## Installation
 
-```
+```sh
 git clone https://github.com/Naedri/detach-mta-board.git
 cd detach-mta-board/
 npm install
+```
+
+After creating an .env.local file from the .env.local.example file, you can launch the server with
+
+```sh
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then you can open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Uses
+
+- If you use [http://localhost:3000](http://localhost:3000), metrics of the overall server will be displayed.
+- If you use [http://localhost:3000/?mail=contact@clebard.cloud](http://localhost:3000/?mail=contact@clebard.cloud), metrics for the following mail : `contact@clebard.cloud` will be displayed.
 
 ## Results
 
 ![Screenshot-Dashboard](./README.assets/Screenshot-Dashboard.png)
 
 ## References
+
+Equivalent of CO2 are calculated upon the following references.
 
 ### WebSite
 
