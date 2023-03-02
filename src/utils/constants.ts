@@ -1,7 +1,6 @@
 import { EquivToCO2, EquivList, LogMetric, LogMail } from "@/types/data";
 
 const API = process.env.NEXT_PUBLIC_BACKEND || "http://localhost:5000";
-const CLIENT = process.env.NEXT_PUBLIC_FRONTEND || "http://localhost:3000";
 
 const equivMo: EquivToCO2[] = [
   {
@@ -69,7 +68,6 @@ export {
   impactByMo,
   referenceDate,
   API,
-  CLIENT,
   DEFAULT_METRIC,
   DEFAULT_EQUIV_LIST,
   DEFAULT_MAIL,
