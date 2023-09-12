@@ -5,7 +5,7 @@ To show the disk space saved with the detach-mta solution, on a user or server l
 ## Installation
 
 ```sh
-git clone https://github.com/Naedri/detach-mta-board.git
+git clone https://github.com/detach-mta/detach-mta-dashboard
 cd detach-mta-board/
 npm install
 ```
